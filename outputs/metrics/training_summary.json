@@ -1,0 +1,72 @@
+{
+  "environment": {
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "python": "3.9.6",
+    "cpu_count": 10
+  },
+  "data": {
+    "n_train": 66435,
+    "n_val": 19171,
+    "n_features": 574,
+    "n_classes": 15
+  },
+  "class_weighting": "sqrt_inverse",
+  "class_weights": {
+    "Background": 0.757,
+    "Meadow": 0.7628,
+    "Soft winter wheat": 0.7959,
+    "Corn": 0.7718,
+    "Winter barley": 0.9655,
+    "Winter rapeseed": 0.9977,
+    "Spring barley": 2.982,
+    "Sunflower": 2.1743,
+    "Winter triticale": 1.5217,
+    "Winter durum wheat": 6.1499,
+    "Fruits, vegetables, flowers": 4.2988,
+    "Leguminous fodder": 1.6143,
+    "Soybeans": 0.877,
+    "Mixed cereal": 2.0731,
+    "Sorghum": 2.5107
+  },
+  "models": {
+    "random_forest": {
+      "params": {
+        "n_estimators": 200,
+        "max_features": "sqrt",
+        "min_samples_leaf": 5,
+        "n_jobs": -1
+      },
+      "train_seconds": 28.8,
+      "model_file": "models/random_forest.joblib",
+      "model_size_mb": 47.5,
+      "validation": {
+        "accuracy": 0.8503468780971258,
+        "macro_f1": 0.6600889504566013,
+        "n_classes_evaluated": 14
+      }
+    },
+    "lightgbm": {
+      "params": {
+        "n_estimators": 1000,
+        "learning_rate": 0.1,
+        "num_leaves": 63,
+        "min_child_samples": 20,
+        "subsample": 0.8,
+        "subsample_freq": 1,
+        "colsample_bytree": 0.5,
+        "reg_lambda": 1.0,
+        "early_stopping_rounds": 50,
+        "n_jobs": -1
+      },
+      "train_seconds": 22.2,
+      "model_file": "models/lightgbm.joblib",
+      "model_size_mb": 1.2,
+      "validation": {
+        "accuracy": 0.8405403995618382,
+        "macro_f1": 0.6073734623687681,
+        "n_classes_evaluated": 14
+      },
+      "best_iteration": 30
+    }
+  }
+}

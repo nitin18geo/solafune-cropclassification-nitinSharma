@@ -26,3 +26,10 @@ Result: 5 of 46 dates dropped (2018-10-10, 2018-11-04, 2019-02-12, 2019-06-07,
 2019-08-11), leaving 41 dates and 574 features. Training table: 66,435 pixels;
 validation: 19,171.
 
+## 4. Models and class imbalance
+Random Forest (200 trees) as a baseline and LightGBM as the main model, both on
+pixel-wise features, which suits CPU-only hardware and the brief's preference
+for a simple, well-reasoned baseline. Class imbalance: sample weights
+proportional to 1/sqrt(class frequency), a compromise between no weighting and
+fully balanced weights, which would up-weight durum wheat about 66x on only 150
+pixels. LightGBM uses early stopping on the validation set (50 rounds).
