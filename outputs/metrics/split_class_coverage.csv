@@ -1,0 +1,21 @@
+class_id,class_name,train_pixels,train_patches,val_pixels,val_patches,test_pixels,test_patches
+0,Background,327573,66,81644,18,96924,18
+1,Meadow,198324,65,43893,18,54359,18
+2,Soft winter wheat,114971,60,48749,18,35388,17
+3,Corn,127407,64,37772,18,31525,16
+4,Winter barley,34871,42,10730,11,11780,11
+5,Winter rapeseed,56030,38,19554,14,17328,13
+6,Spring barley,2131,5,1188,3,153,1
+7,Sunflower,4607,8,2121,4,2851,6
+8,Grapevine,1345,1,0,0,0,0
+9,Beet,0,0,0,0,0,0
+10,Winter triticale,10335,18,3268,3,1612,4
+11,Winter durum wheat,247,1,172,1,306,1
+12,"Fruits, vegetables, flowers",500,3,86,1,2643,2
+13,Potatoes,158,1,0,0,0,0
+14,Leguminous fodder,8892,16,1964,4,1778,7
+15,Soybeans,91773,50,15959,16,13828,14
+16,Orchard,75,1,0,0,0,0
+17,Mixed cereal,4330,10,216,1,674,2
+18,Sorghum,4382,6,0,0,665,1
+19,Void label,93393,66,27596,18,23098,18

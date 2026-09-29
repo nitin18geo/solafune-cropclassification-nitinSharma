@@ -12,6 +12,7 @@ paths:
   predictions_dir: outputs/predictions
   splits_dir: outputs/splits
   models_dir: models
+  processed_dir: data/processed
 
 seed: 42
 
@@ -44,6 +45,7 @@ classes:
   19: Void label
 
 void_label: 19
+
 # Classes ignored in training and evaluation (like the void label).
 # Each occurs in at most one patch, so it cannot appear in both the training
 # and test splits without spatial leakage (Beet does not occur at all).
@@ -56,3 +58,14 @@ split:
   val_folds: [4]
   test_folds: [5]
 
+# Preprocessing and feature engineering
+preprocessing:
+  reflectance_max: 10000          # S2 L2A scale factor; values clipped to [0, 10000]
+  drop_cloudy_dates: true         # drop dates that are cloudy across the whole AOI
+  cloud_blue_threshold: 0.2       # B2 reflectance above this = likely cloud/haze
+  cloud_date_max_frac: 0.5        # drop a date if more than this share of pixels is bright
+  indices: [NDVI, NDWI, NDMI, NDRE]
+
+# Pixel sampling for building the training and validation tables
+sampling:
+  max_pixels_per_class_per_patch: 150
