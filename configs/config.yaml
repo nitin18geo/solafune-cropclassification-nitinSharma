@@ -15,6 +15,10 @@ paths:
 
 seed: 42
 
+# Basemap for the AOI map (contextily provider name, or "none").
+# OpenStreetMap.Mapnik blocks automated requests, and CartoDB now needs an API key, so Esri is used.
+aoi_basemap: Esri.WorldTopoMap
+
 bands: [B2, B3, B4, B5, B6, B7, B8, B8A, B11, B12]
 
 classes:
@@ -40,3 +44,15 @@ classes:
   19: Void label
 
 void_label: 19
+# Classes ignored in training and evaluation (like the void label).
+# Each occurs in at most one patch, so it cannot appear in both the training
+# and test splits without spatial leakage (Beet does not occur at all).
+excluded_classes: [8, 9, 13, 16]   # Grapevine, Beet, Potatoes, Orchard
+
+# Train / validation / test split by PASTIS fold (folds are spatially separated,
+# so neighbouring fields never end up on both sides of the split).
+split:
+  train_folds: [1, 2, 3]
+  val_folds: [4]
+  test_folds: [5]
+
