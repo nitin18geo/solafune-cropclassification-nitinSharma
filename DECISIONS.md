@@ -33,3 +33,17 @@ for a simple, well-reasoned baseline. Class imbalance: sample weights
 proportional to 1/sqrt(class frequency), a compromise between no weighting and
 fully balanced weights, which would up-weight durum wheat about 66x on only 150
 pixels. LightGBM uses early stopping on the validation set (50 rounds).
+
+LightGBM first used early stopping on validation log-loss and stopped after
+very few rounds (macro F1 0.607, below Random Forest). Training is class-weighted
+but validation is not, so log-loss worsened while F1 was still improving.
+Switched early stopping to validation macro F1, and slowed boosting
+(learning rate 0.05, 31 leaves, min 50 samples per leaf, patience 100).
+
+After testing with validation split: With macro-F1 early stopping, LightGBM reached val macro F1 0.625 (best round
+<50), still below Random Forest (0.660; accuracy 0.850 vs 0.838). Boosting
+overfits the few fields of rare classes quickly, and fold 4 is spatially
+separate; bagging in Random Forest is more robust here. Small classes also make
+macro F1 noisy. Final model: Random Forest, selected on validation before
+looking at test results. LightGBM kept as a comparison. No further tuning, to
+avoid overfitting to the validation fold.

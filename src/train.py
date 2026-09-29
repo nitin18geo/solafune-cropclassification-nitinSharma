@@ -81,22 +81,47 @@ def train_random_forest(X, y, sample_weight, params: dict, seed: int):
     return model, {}
 
 
+def lgb_macro_f1(y_true: np.ndarray, y_pred: np.ndarray):
+    """LightGBM eval metric: macro F1 over classes present in the evaluation set.
+
+    Handles both prediction layouts: (n, n_classes) in LightGBM 4.x and a flat,
+    class-major array in 3.x.
+    """
+    y_true = np.asarray(y_true).astype(int)
+    if y_pred.ndim == 1:
+        y_pred = y_pred.reshape(-1, len(y_true)).T
+    pred = y_pred.argmax(axis=1)
+    present = np.unique(y_true)
+    return "macro_f1", f1_score(y_true, pred, labels=present, average="macro",
+                                zero_division=0), True
+
+
 def train_lightgbm(X, y, sample_weight, X_val, y_val, params: dict, seed: int):
+    """LightGBM with early stopping on validation macro F1.
+
+    Early stopping on multi_logloss stopped too soon: training uses class weights
+    but validation is unweighted, so the probability-based loss worsens as rare
+    classes are boosted even while accuracy and F1 keep improving. Stopping on
+    macro F1 matches what we actually evaluate.
+    """
     import lightgbm as lgb
 
     # eval_set is deprecated in the newest LightGBM releases but still works, and
     # keeps the script compatible with older versions.
     warnings.filterwarnings("ignore", message=".*eval_set.*deprecated.*")
+    warnings.filterwarnings("ignore", message=".*does not have valid feature names.*")
     params = dict(params)
     stop_rounds = params.pop("early_stopping_rounds")
-    model = lgb.LGBMClassifier(objective="multiclass", random_state=seed,
+    model = lgb.LGBMClassifier(objective="multiclass", metric="None", random_state=seed,
                                verbose=-1, **params)
     model.fit(
         X, y, sample_weight=sample_weight,
-        eval_set=[(X_val, y_val)], eval_metric="multi_logloss",
+        eval_set=[(X_val, y_val)], eval_metric=lgb_macro_f1,
         callbacks=[lgb.early_stopping(stop_rounds, verbose=False), lgb.log_evaluation(50)],
     )
-    return model, {"best_iteration": int(model.best_iteration_ or params["n_estimators"])}
+    best = model.best_iteration_ or params["n_estimators"]
+    return model, {"best_iteration": int(best),
+                   "best_val_macro_f1": round(float(model.best_score_["valid_0"]["macro_f1"]), 4)}
 
 
 def feature_importance(model, names: list[str], n_channels: int) -> dict[str, pd.DataFrame]:
@@ -152,6 +177,9 @@ def main() -> None:
                           for i, w in enumerate(cw)},
         "models": {},
     }
+    summary_path = met_dir / "training_summary.json"
+    if summary_path.exists():  # keep results of models trained in earlier runs
+        summary["models"] = json.loads(summary_path.read_text()).get("models", {})
 
     for name in args.models or cfg["training"]["models"]:
         print(f"\n=== Training {name} ===")
@@ -183,8 +211,8 @@ def main() -> None:
         print("Top channels by importance: "
               + ", ".join(f"{c} {v:.2f}" for c, v in imp["by_channel"].head(5).items()))
 
-    (met_dir / "training_summary.json").write_text(json.dumps(summary, indent=2))
-    print(f"\nTraining summary saved to {met_dir / 'training_summary.json'}")
+    summary_path.write_text(json.dumps(summary, indent=2))
+    print(f"\nTraining summary saved to {summary_path}")
 
 
 if __name__ == "__main__":

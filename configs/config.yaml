@@ -83,13 +83,13 @@ random_forest:
  
 lightgbm:
   n_estimators: 1000                  # upper limit; early stopping picks the best
-  learning_rate: 0.1
-  num_leaves: 63
-  min_child_samples: 20
+  learning_rate: 0.05
+  num_leaves: 31
+  min_child_samples: 50
   subsample: 0.8
   subsample_freq: 1
   colsample_bytree: 0.5
   reg_lambda: 1.0
-  early_stopping_rounds: 50
+  early_stopping_rounds: 100         # on validation macro F1
   n_jobs: -1
  
