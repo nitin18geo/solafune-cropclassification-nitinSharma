@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-import src
+
 import matplotlib
 
 if __name__ == "__main__":
@@ -210,23 +210,57 @@ def plot_ndvi_profiles(ndvi: pd.DataFrame, classes: dict, path=None) -> plt.Figu
     return save_fig(fig, path)
 
 
-def plot_aoi_map(meta, path=None) -> plt.Figure:
-    """Patch footprints in WGS84 coloured by fold, with an optional web basemap."""
-    gdf = meta.to_crs(epsg=4326)
-    fig, ax = plt.subplots(figsize=(8, 8))
-    gdf.plot(ax=ax, column="Fold", categorical=True, cmap="Set1",
-             edgecolor="black", linewidth=0.5, alpha=0.6, legend=True,
-             legend_kwds={"title": "Fold", "loc": "upper left"})
-    try:  # basemap is optional and needs internet access
-        import contextily as cx
-        cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.OpenStreetMap.Mapnik)
-    except Exception:
-        pass
+def plot_aoi_map(meta, cfg: dict, date_idx: int, date_label: str = "", path=None) -> plt.Figure:
+    """Sentinel-2 true-colour patches at their real locations over a basemap, outlined by fold.
+
+    Plotted in the data's native projection (Lambert-93, EPSG:2154, metres), where
+    patch footprints are axis-aligned squares. Uses one date for all patches and a
+    single fixed stretch so the mosaic looks consistent across patches.
+    """
+    gdf = meta.drop(columns=["dates"], errors="ignore")
+    s2_dir = Path(cfg["paths"]["s2_dir"])
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    for pid, row in gdf.iterrows():
+        arr = np.load(s2_dir / f"S2_{pid}.npy", mmap_mode="r")  # reads only what is needed
+        rgb = arr[date_idx, list(RGB_BANDS)].astype(np.float32) / REFL_SCALE
+        rgb = np.clip(rgb / 0.25, 0, 1) ** 0.8  # fixed stretch: 0-25% reflectance
+        minx, miny, maxx, maxy = row.geometry.bounds
+        ax.imshow(np.transpose(rgb, (1, 2, 0)), extent=(minx, maxx, miny, maxy),
+                  origin="upper", interpolation="nearest", zorder=2)
+
+    fold_colors = dict(zip(sorted(gdf["Fold"].unique()), plt.get_cmap("Set1").colors))
+    for fold, color in fold_colors.items():
+        gdf[gdf["Fold"] == fold].boundary.plot(ax=ax, color=color, linewidth=1.5, zorder=3)
+    ax.legend(handles=[Patch(facecolor="none", edgecolor=c, linewidth=2, label=f"Fold {f}")
+                       for f, c in fold_colors.items()], loc="upper left", fontsize=9)
+
     minx, miny, maxx, maxy = gdf.total_bounds
-    ax.set_title(f"AOI: {len(gdf)} patches\n"
-                 f"lon {minx:.2f} to {maxx:.2f}, lat {miny:.2f} to {maxy:.2f}")
-    ax.set_xlabel("Longitude")
-    ax.set_ylabel("Latitude")
+    pad = 1500
+    ax.set_xlim(minx - pad, maxx + pad)
+    ax.set_ylim(miny - pad, maxy + pad)
+    ax.set_aspect("equal")
+
+    # Optional web basemap underneath the Sentinel-2 patches (needs internet).
+    # Provider is set in the config; "none" switches it off.
+    basemap = cfg.get("aoi_basemap", "Esri.WorldTopoMap")
+    if basemap and str(basemap).lower() != "none":
+        try:
+            import contextily as cx
+            cx.add_basemap(ax, crs=gdf.crs, source=cx.providers.query_name(basemap),
+                           zorder=0, attribution_size=6)
+        except Exception as e:
+            print(f"[info] basemap not added ({type(e).__name__}); continuing without it")
+    ax.set_facecolor("#f2f2f2")
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v / 1000:.0f}"))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v / 1000:.0f}"))
+    ax.set_xlabel("Easting (km, Lambert-93)")
+    ax.set_ylabel("Northing (km, Lambert-93)")
+
+    lon0, lat0, lon1, lat1 = gdf.to_crs(epsg=4326).total_bounds
+    ax.set_title(f"AOI: {len(gdf)} Sentinel-2 patches, tile T31TFM ({date_label})\n"
+                 f"lon {lon0:.2f} to {lon1:.2f} E, lat {lat0:.2f} to {lat1:.2f} N")
+    ax.grid(alpha=0.3)
     fig.tight_layout()
     return save_fig(fig, path)
 
@@ -344,8 +378,7 @@ def run_eda(cfg: dict, show: bool = False) -> dict:
     figs["cloud"] = plot_cloud_by_date(
         cloud, BRIGHT_BLUE_THRESHOLD, fig_dir / "cloud_proxy_by_date.png")
     figs["ndvi"] = plot_ndvi_profiles(nd, classes, fig_dir / "ndvi_profiles_by_class.png")
-    figs["aoi"] = plot_aoi_map(meta.loc[stats["ids"]], fig_dir / "aoi_map.png")
-
+    
     examples = pick_diverse_patches(counts, n=6, seed=cfg["seed"])
     labels = {pid: load_patch(pid, cfg)[1] for pid in examples}
     figs["labels"] = plot_label_examples(labels, classes, path=fig_dir / "label_examples.png")
@@ -356,6 +389,8 @@ def run_eda(cfg: dict, show: bool = False) -> dict:
     for pid in examples[:3]:
         s2, y = load_patch(pid, cfg)
         items.append((pid, s2[clear_t], y))
+    figs["aoi"] = plot_aoi_map(meta.loc[stats["ids"]], cfg, clear_t, clear_date,
+                               path=fig_dir / "aoi_map.png")
     figs["rgb_labels"] = plot_rgb_label_pairs(
         items, classes, clear_date, fig_dir / "rgb_and_labels.png")
 
