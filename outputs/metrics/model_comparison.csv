@@ -1,0 +1,5 @@
+model,split,overall_accuracy,macro_f1,weighted_f1,miou,miou_crops_only
+random_forest,val,0.863,0.67,0.861,0.591,0.583
+random_forest,test,0.843,0.501,0.834,0.441,0.423
+lightgbm,val,0.854,0.63,0.852,0.547,0.536
+lightgbm,test,0.835,0.496,0.827,0.435,0.417

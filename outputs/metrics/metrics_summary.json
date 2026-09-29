@@ -1,0 +1,59 @@
+{
+  "random_forest": {
+    "val": {
+      "overall_accuracy": 0.8634687037064748,
+      "macro_f1": 0.6701231865441214,
+      "weighted_f1": 0.8614658092373829,
+      "miou": 0.5914728221953053,
+      "miou_crops_only": 0.5830932433157959,
+      "n_classes_evaluated": 14,
+      "classes_not_in_split": [
+        "Sorghum"
+      ],
+      "n_pixels_evaluated": 267316,
+      "n_patches": 18,
+      "inference_seconds": 1.2
+    },
+    "test": {
+      "overall_accuracy": 0.8430912315038961,
+      "macro_f1": 0.5006318617435125,
+      "weighted_f1": 0.8342275277906525,
+      "miou": 0.4407425186656483,
+      "miou_crops_only": 0.42278949418269135,
+      "n_classes_evaluated": 15,
+      "classes_not_in_split": [],
+      "n_pixels_evaluated": 271814,
+      "n_patches": 18,
+      "inference_seconds": 1.2
+    }
+  },
+  "lightgbm": {
+    "val": {
+      "overall_accuracy": 0.8539144682697631,
+      "macro_f1": 0.6298868043097828,
+      "weighted_f1": 0.8515778958848261,
+      "miou": 0.5468764255935874,
+      "miou_crops_only": 0.5360263462424614,
+      "n_classes_evaluated": 14,
+      "classes_not_in_split": [
+        "Sorghum"
+      ],
+      "n_pixels_evaluated": 267316,
+      "n_patches": 18,
+      "inference_seconds": 0.7
+    },
+    "test": {
+      "overall_accuracy": 0.8348576600175119,
+      "macro_f1": 0.49602198084932964,
+      "weighted_f1": 0.8271280150999328,
+      "miou": 0.43466324897116027,
+      "miou_crops_only": 0.41689384782800765,
+      "n_classes_evaluated": 15,
+      "classes_not_in_split": [],
+      "n_pixels_evaluated": 271814,
+      "n_patches": 18,
+      "inference_seconds": 0.8
+    }
+  },
+  "final_model": "random_forest"
+}

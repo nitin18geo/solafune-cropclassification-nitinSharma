@@ -47,3 +47,10 @@ separate; bagging in Random Forest is more robust here. Small classes also make
 macro F1 noisy. Final model: Random Forest, selected on validation before
 looking at test results. LightGBM kept as a comparison. No further tuning, to
 avoid overfitting to the validation fold.
+
+## 5. Evaluation
+Evaluated on all pixels of every val/test patch; void and excluded classes
+ignored. Averages use only classes present in each split. Random Forest (test):
+OA 0.843, weighted F1 0.834, macro F1 0.501, mIoU 0.441; it also beats LightGBM
+on test, consistent with the validation-based choice. Test results were viewed
+once; no tuning after this point.

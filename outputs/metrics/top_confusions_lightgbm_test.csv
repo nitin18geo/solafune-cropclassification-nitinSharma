@@ -1,0 +1,16 @@
+true_class,predicted_as,pixels,share_of_true_class_pct
+Background,Meadow,18529,19.1
+Meadow,Background,6383,11.7
+Background,Corn,1481,1.5
+Winter triticale,Soft winter wheat,1343,83.3
+"Fruits, vegetables, flowers",Background,1096,41.5
+Corn,Background,1025,3.3
+Background,Soft winter wheat,956,1.0
+Background,Winter rapeseed,871,0.9
+"Fruits, vegetables, flowers",Meadow,750,28.4
+Soft winter wheat,Background,710,2.0
+Corn,Meadow,668,2.1
+Background,Winter barley,660,0.7
+"Fruits, vegetables, flowers",Sunflower,648,24.5
+Corn,Soybeans,636,2.0
+Leguminous fodder,Meadow,595,33.5

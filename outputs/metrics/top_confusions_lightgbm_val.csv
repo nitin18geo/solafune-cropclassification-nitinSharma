@@ -1,0 +1,16 @@
+true_class,predicted_as,pixels,share_of_true_class_pct
+Background,Meadow,13640,16.7
+Meadow,Background,5442,12.4
+Meadow,Soft winter wheat,3064,7.0
+Background,Soft winter wheat,1733,2.1
+Background,Corn,1507,1.8
+Corn,Soybeans,1398,3.7
+Soft winter wheat,Background,986,2.0
+Corn,Background,931,2.5
+Background,Winter rapeseed,760,0.9
+Winter triticale,Soft winter wheat,746,22.8
+Background,Winter barley,725,0.9
+Spring barley,Soft winter wheat,600,50.5
+Meadow,Winter barley,562,1.3
+Soft winter wheat,Winter barley,548,1.1
+Soybeans,Corn,516,3.2
