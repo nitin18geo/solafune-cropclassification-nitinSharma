@@ -1,0 +1,21 @@
+# data (describe location in README instead)
+data/
+DATA_S2/
+ANNOTATIONS/
+*.npy
+metadata.geojson
+
+# models and large outputs
+models/
+*.pkl
+*.joblib
+*.pt
+*.pth
+outputs/predictions/*.npy
+
+# environment / OS
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+.env
