@@ -22,3 +22,7 @@ training patches only). Features per pixel: 10 bands + NDVI, NDWI, NDMI, NDRE
 at every kept date. No standardisation (not needed for tree models).
 Training/validation tables sample up to 150 pixels per class per patch to limit
 dominance of large classes and spread samples across many fields.
+Result: 5 of 46 dates dropped (2018-10-10, 2018-11-04, 2019-02-12, 2019-06-07,
+2019-08-11), leaving 41 dates and 574 features. Training table: 66,435 pixels;
+validation: 19,171.
+
