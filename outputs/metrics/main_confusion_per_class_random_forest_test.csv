@@ -1,0 +1,16 @@
+true_class,main_confusion,share_pct,support
+Background,Meadow,17.9,96924
+Meadow,Background,11.7,54359
+Soft winter wheat,Background,1.9,35388
+Corn,Background,2.6,31525
+Winter barley,Background,2.2,11780
+Winter rapeseed,Background,1.6,17328
+Spring barley,Winter barley,73.9,153
+Sunflower,Corn,6.9,2851
+Winter triticale,Soft winter wheat,86.5,1612
+Winter durum wheat,Soft winter wheat,91.2,306
+"Fruits, vegetables, flowers",Background,49.8,2643
+Leguminous fodder,Meadow,45.6,1778
+Soybeans,Background,2.6,13828
+Mixed cereal,Soft winter wheat,53.9,674
+Sorghum,Meadow,89.6,665
