@@ -1,7 +1,7 @@
 # Crop Type Classification with Multi-Temporal Sentinel-2 (PASTIS subset)
 
 **Name:** Nitin Sharma\
-**Email:** your.email@example.com\
+**Email:** nitin18geo@gmail.com\
 **Submitted for:** Solafune, Geo Data Scientist assignment
 
 A reproducible workflow for pixel-wise crop type classification from a full season of Sentinel-2 imagery, built for the Solafune Geo Data Scientist assignment. It covers data loading, exploratory analysis, a spatially leakage-free split, feature engineering, training of a Random Forest and a LightGBM model, full-patch evaluation and visualisation of outputs.
